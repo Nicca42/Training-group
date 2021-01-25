@@ -26,4 +26,4 @@ module.exports = {
       accounts: [`0x${ROPSTEN_PRIVATE_KEY}`]
     }
   }
-}
+};
