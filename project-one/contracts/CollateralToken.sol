@@ -19,11 +19,11 @@ contract CollateralToken is ERC20, Ownable {
         minters[_curve] == true;
     }
 
-    function mint(address account, uint256 amount) public onlyAuthorized {
+    function mint(address account, uint256 amount) public onlyAuthorized() {
         _mint(account, amount);
     }
 
-    function burn(address account, uint256 amount) public onlyAuthorized {
+    function burn(address account, uint256 amount) public onlyAuthorized() {
         _burn(account, amount);
     }
 
