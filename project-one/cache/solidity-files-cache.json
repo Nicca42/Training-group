@@ -176,6 +176,79 @@
       "artifacts": [
         "SafeMath"
       ]
+    },
+    "/Users/veronicac/Desktop/projects/Training-group/project-one/contracts/Token.sol": {
+      "lastModificationDate": 1611589836247,
+      "contentHash": "ec5d5842172001519599e46a9bc9013f",
+      "sourceName": "contracts/Token.sol",
+      "solcConfig": {
+        "version": "0.7.3",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.7.0"
+      ],
+      "artifacts": [
+        "Token"
+      ]
+    },
+    "/Users/veronicac/Desktop/projects/Training-group/project-one/contracts/Curve.sol": {
+      "lastModificationDate": 1611590210591,
+      "contentHash": "6cd3e0db05d5b4b64a62cb46166f259f",
+      "sourceName": "contracts/Curve.sol",
+      "solcConfig": {
+        "version": "0.7.3",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Token.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.7.0"
+      ],
+      "artifacts": [
+        "Curve"
+      ]
     }
   }
 }
