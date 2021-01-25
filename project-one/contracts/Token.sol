@@ -5,28 +5,29 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract Token is ERC20 {
 
-	address private _owner;
-	address{} private _minters;
+	address owner;
+	mapping(address => bool) minters;
 
     constructor() 
     ERC20(
         "G-Money Token",
         "GMT"
     ) {
-		_minters.push(msg.sender);
+		minters[msg.sender] = true;
+		owner = msg.sender;
+	}
 
-	modifier isMinter {
-		// WTF is a soidity method like .has in javascript ????/ FUUUUJUCLKKJWEFHKLAEFGBKLAE
-        require(_minters);
+	modifier isMinter() {
+        require(minters[msg.sendder], "Caller must be a minter");
+		_;
     }	
-	modifier isOwner {
+	modifier isOwner() {
 		require(msg.sender == _owner);
 	}
 
-    }
-    function mint((uint256 _amount, address _to) public isMinter  {
+    
+    function mint(uint256 _amount, address _to) public isMinter  {
         _mint(_to, _amount);
-
     }
 
     function burn(address account, uint256 amount) public {
