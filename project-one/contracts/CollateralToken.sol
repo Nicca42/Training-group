@@ -7,6 +7,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract CollateralToken is ERC20, Ownable {
     mapping (address => bool) private minters;
 
+    event MinterAdded(address addedBy, address newMinter);
+
     modifier onlyAuthorized() {
         require(minters[msg.sender], "unauthorized address");
         _;
@@ -28,5 +30,6 @@ contract CollateralToken is ERC20, Ownable {
 
     function addMinter(address newMinter) public onlyOwner {
         minters[newMinter] = true;
+        emit MinterAdded(msg.sender, newMinter);
     }
 }
