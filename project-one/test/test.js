@@ -1,7 +1,7 @@
 const { ethers } = require("hardhat");
 const { expect } = require("chai");
 
-const initToken = async minter => {
+const initToken = async (minter, minterAddress, userAddress) => {
     const TokenContract = await ethers.getContractFactory("CollateralToken");
     const tokenContract = await TokenContract.connect(minter).deploy();
     await tokenContract.deployed();
@@ -45,25 +45,21 @@ describe("CollateralToken", () => {
         minterAddress = await minter.getAddress();
         userAddress = await user.getAddress();
 
-        const TokenContract = await ethers.getContractFactory("CollateralToken");
-        tokenContract = await TokenContract.connect(minter).deploy();
-        await tokenContract.deployed();
+        tokenContract = await initToken(minter, minterAddress, userAddress);
     })
 
     describe("ERC20 tests", async () => {
         describe("functions", async () => {
+            // todo: rest of OZ-ERC20
+
             it("returns total supply", async () => {
                 // mintHundred checks supply
                 await mintHundred(tokenContract, minter, minterAddress);
             });
 
             it("returns user balances", async () => {
-                const expectedMinterBalance = ethers.utils.parseUnits("100", 18);
-                const expectedUserBalance = ethers.constants.Zero;
-                expect(await tokenContract.balanceOf(minterAddress))
-                    .to.equal(expectedUserBalance);
-                expect(await tokenContract.balanceOf(userAddress))
-                    .to.equal(expectedUserBalance);
+                // mintHundred checks balances
+                await mintHundred(tokenContract, minter, minterAddress);
             });
 
             it("returns a non-user's balance as 0", async () => {
