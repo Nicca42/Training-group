@@ -8,15 +8,14 @@ contract CollateralToken is ERC20, Ownable {
     mapping (address => bool) private minters;
 
     modifier onlyAuthorized() {
-        require(members[msg.sender], "unauthorized address");
+        require(minters[msg.sender], "unauthorized address");
         _;
     }
 
-    constructor(address _curve) 
+    constructor() 
     ERC20("Collateral Token", "CLT")
     Ownable() {
-        minters[msg.sender] == true;
-        minters[_curve] == true;
+        minters[msg.sender] = true;
     }
 
     function mint(address account, uint256 amount) public onlyAuthorized() {
