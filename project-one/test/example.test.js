@@ -1,24 +1,24 @@
 const { expect } = require("chai");
 
 describe("Example contract", function() {
-    // User accounts
-    let deployer;
-    let user;
-    // Creating an instance for the contract
-    let exampleToken;
+        // User accounts
+        let owner;
+        let user;
+        // Creating an instance for the contract
+        let hardHatToken;
 
     beforeEach(async () => {
         // Any set up that needs to happen before each test
 
         // Getting the signers provided by ethers
         const signers = await ethers.getSigners();
-        deployer = signers[0];
+        owner = signers[0];
         user = signers[1];
 
         // Getting the token code (abi, bytecode, name)
-        const Example = await ethers.getContractFactory("Token");
+        const Token = await ethers.getContractFactory("CollateralToken");
         // Deploying the token contract
-        exampleToken = await Token.deploy();
+        hardHatToken = await Token.deploy();
     });
 
     describe("Available tests", function() {
@@ -124,5 +124,5 @@ describe("Example contract", function() {
             const ownerBalance = await hardhatToken.balanceOf(owner.address);
             expect(await hardhatToken.totalSupply()).to.equal(ownerBalance);
         });
-    )};
-)};
+    });
+});
