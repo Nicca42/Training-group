@@ -50,7 +50,11 @@ describe("CollateralToken", () => {
 
     describe("ERC20 tests", async () => {
         describe("functions", async () => {
-            // todo: rest of OZ-ERC20
+            it("returns name");
+
+            it("returns symbol");
+
+            it("returns decimals");
 
             it("returns total supply", async () => {
                 // mintHundred checks supply
@@ -74,7 +78,13 @@ describe("CollateralToken", () => {
                     .to.equal(origAllowance.add(ethers.utils.parseUnits("10", 18)));
             });
 
-            it("allows approved users to transfer");
+            it("allows users to transfer as expected");
+
+            it("allows approved users to transferFrom");
+
+            it("increases allowance as expected");
+
+            it("decreases allowance as expected");
 
         });
 
@@ -113,9 +123,9 @@ describe("CollateralToken", () => {
 
             it("owner can transfer ownership");
 
-            it("owner can renounce ownership"); // this may bomb the event checks
-
             it("non-owner cannot add minters");
+            
+            it("owner can renounce ownership"); // this may bomb the event checks
         });
 
         describe("events", async () => {
