@@ -15,7 +15,7 @@ contract CollateralToken is ERC20, Ownable {
     }
 
     constructor() 
-    ERC20("Collateral Token", "CLT")
+    ERC20("Test Token", "TST")
     Ownable() {
         minters[msg.sender] = true;
     }
