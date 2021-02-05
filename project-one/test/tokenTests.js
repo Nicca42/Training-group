@@ -103,11 +103,6 @@ describe("CollateralToken", () => {
             });
 
             it("approves as expected", async () => {
-                // const origAllowance = await tokenContract.allowance(minterAddress, userAddress);
-                // await tokenContract.approve(userAddress, ten);
-                // expect(await tokenContract.allowance(minterAddress, userAddress))
-                //     .to.equal(origAllowance.add(ten));
-                
                 // allowanceFlow checks approve
                 allowanceFlow(tokenContract, minter, minterAddress, userAddress);
             });
@@ -168,14 +163,12 @@ describe("CollateralToken", () => {
                     .to.equal(origAllowance.sub(ten));
             });
 
+            // todo: expected fails (overextending allowance, sub-zero allowance)
+
         });
 
         describe("events", async () => {
             it("emits Transfer properly on transfer");
-
-            it("emits Transfer properly on mint");
-
-            it("emits Transfer properly on burn");
 
             it("emits Approval properly");
         });
@@ -196,6 +189,10 @@ describe("CollateralToken", () => {
 
         describe("events", async () => {
             it("emits MinterAdded properly");
+
+            it("emits Transfer properly on mint");
+
+            it("emits Transfer properly on burn");
         })
     });
 
