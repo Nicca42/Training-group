@@ -63,7 +63,7 @@ describe("CollateralToken", () => {
         userAddress = await user.getAddress();
 
         tokenContract = await initToken(minter, minterAddress, userAddress);
-    })
+    });
 
     describe("ERC20 tests", async () => {
         describe("functions", async () => {
