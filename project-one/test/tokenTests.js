@@ -163,14 +163,78 @@ describe("CollateralToken", () => {
                     .to.equal(origAllowance.sub(ten));
             });
 
-            // todo: expected fails (overextending allowance, sub-zero allowance)
+            it("does not allow spending past balance", async () => {
+                const origBalance = await tokenContract.balanceOf(minterAddress);
+                await expect(tokenContract.connect(minter)
+                    .transfer(userAddress, origBalance.add(ten))
+                )
+                .to.be.revertedWith("ERC20: transfer amount exceeds balance");                   
+            });
 
+            it("does not allow approving the zero address", async () => {
+                await expect(tokenContract.connect(minter)
+                    .approve(ethers.constants.AddressZero, ten)
+                )
+                .to.be.revertedWith("ERC20: approve to the zero address");
+            })
+
+            it("does not allow spending past allowance", async () => {
+                await mintHundred(tokenContract, minter, minterAddress);
+                const origAllowance = await tokenContract.allowance(minterAddress, userAddress);
+
+                await expect(tokenContract.connect(user)
+                    .transferFrom(minterAddress, userAddress, origAllowance.add(ten))
+                )
+                .to.be.revertedWith("ERC20: transfer amount exceeds allowance");
+            })
+
+            it("does not allow a sub-zero allowance", async () => {
+                const origAllowance = await tokenContract.allowance(minterAddress, userAddress);
+
+                await expect(tokenContract.connect(minter)
+                    .decreaseAllowance(userAddress, origAllowance.add(ten))
+                )
+                .to.be.revertedWith("ERC20: decreased allowance below zero");
+            })
+
+            it("does not allow transfer to the zero address", async () => {
+                await mintHundred(tokenContract, minter, minterAddress);
+
+                await expect(tokenContract.connect(minter)
+                    .transfer(ethers.constants.AddressZero, ten)
+                )
+                .to.be.revertedWith("ERC20: transfer to the zero address");
+            })
         });
 
         describe("events", async () => {
-            it("emits Transfer properly on transfer");
+            it("emits Transfer properly on transfer", async () => {
+                await mintHundred(tokenContract, minter, minterAddress);
+                await expect(tokenContract.connect(minter)
+                    .transfer(userAddress, ten)
+                )
+                .to.emit(tokenContract, "Transfer")
+                .withArgs(minterAddress, userAddress, ten);
+            });
 
-            it("emits Approval properly");
+            it("emits Transfer properly on transferFrom", async () => {
+                await mintHundred(tokenContract, minter, minterAddress);
+                await allowanceFlow(tokenContract, minter, minterAddress, userAddress);
+
+                await expect(tokenContract.connect(user)
+                    .transferFrom(minterAddress, userAddress, ten)
+                )
+                .to.emit(tokenContract, "Transfer")
+                .withArgs(minterAddress, userAddress, ten);
+            })
+
+            it("emits Approval properly", async () => {
+                await expect(tokenContract.connect(minter)
+                    .approve(userAddress, ten)
+                )
+                .to.emit(tokenContract, "Approval")
+                .withArgs(minterAddress, userAddress, ten);
+            });
         });
     });
 
@@ -204,7 +268,7 @@ describe("CollateralToken", () => {
 
             it("non-owner cannot add minters");
             
-            it("owner can renounce ownership"); // this may bomb the event checks
+            it("owner can renounce ownership"); // this may bomb future event checks
         });
 
         describe("events", async () => {
