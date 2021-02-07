@@ -240,27 +240,162 @@ describe("CollateralToken", () => {
 
     describe("CollateralToken-specific tests", async () => {
         describe("functions", async () => {
-            it("mints properly");
+            it("mints properly", async () => {
+                assert(await tokenContract.isMinter(minterAddress) === true,
+                    "test should start with minter enabled as a minter");
 
-            it("burns properly");
+                const origBalance = await tokenContract.balanceOf(minterAddress);
+                await tokenContract.connect(minter)
+                    .mint(minterAddress, ten);
 
-            it("adds minters properly");
+                expect(await tokenContract.balanceOf(minterAddress))
+                    .to.equal(origBalance.add(ten));
+            });
 
-            it("removes minters properly");
+            it("burns properly", async () => {
+                assert(await tokenContract.isMinter(minterAddress) === true,
+                    "test should start with minter enabled as a minter");
 
-            it("non-minter cannot mint");
+                await mintHundred(tokenContract, minter, minterAddress);
+                const origBalance = await tokenContract.balanceOf(minterAddress);
 
-            it("non-minter cannot burn");
+                await tokenContract.connect(minter)
+                    .burn(minterAddress, ten);
+
+                expect(await tokenContract.balanceOf(minterAddress))
+                    .to.equal(origBalance.sub(ten));
+            });
+
+            it("adds minters properly", async () => {
+                assert(await tokenContract.owner() === minterAddress, 
+                    "test should start with minter being owner");
+                assert(await tokenContract.isMinter(userAddress) === false,
+                    "test should start with user not enabled as a minter");
+
+                await tokenContract.connect(minter)
+                    .addMinter(userAddress);
+
+                expect(await tokenContract.isMinter(userAddress))
+                    .to.equal(true);
+
+                // clean up
+                await tokenContract.connect(minter)
+                    .removeMinter(userAddress);
+
+                expect(await tokenContract.isMinter(userAddress))
+                    .to.equal(false);
+            });
+
+            it("removes minters properly", async () => {
+                assert(await tokenContract.owner() === minterAddress, 
+                    "test should start with minter being owner");
+
+                await tokenContract.connect(minter)
+                    .addMinter(userAddress);
+
+                expect(await tokenContract.isMinter(userAddress))
+                    .to.equal(true);
+
+                await tokenContract.connect(minter)
+                    .removeMinter(userAddress);
+
+                expect(await tokenContract.isMinter(userAddress))
+                    .to.equal(false);
+            });
+
+            it("non-minter cannot mint", async () => {
+                assert(await tokenContract.isMinter(userAddress) === false,
+                    "user should not start test enabled as a minter");
+
+                await expect(tokenContract.connect(user)
+                    .mint(userAddress, ten)
+                )
+                .to.be.revertedWith("unauthorized address");
+            });
+
+            it("non-minter cannot burn", async () => {
+                assert(await tokenContract.isMinter(userAddress) === false,
+                    "user should not start test enabled as a minter");
+
+                await mintHundred(tokenContract, minter, minterAddress);
+
+                await expect(tokenContract.connect(user)
+                    .burn(minterAddress, ten)
+                )
+                .to.be.revertedWith("unauthorized address");
+            });
+
+            it("cannot mint to zero address", async () => {
+                assert(await tokenContract.owner() === minterAddress, 
+                    "test should start with minter being owner");
+
+                await expect(tokenContract.connect(minter)
+                    .mint(ethers.constants.AddressZero, ten)
+                )
+                .to.be.revertedWith("ERC20: mint to the zero address")
+            });
         });
 
         describe("events", async () => {
-            it("emits MinterAdded properly");
+            it("emits MinterAdded properly", async () => {
+                assert(await tokenContract.owner() === minterAddress, 
+                    "test should start with minter being owner");
+                assert(await tokenContract.isMinter(userAddress) === false,
+                    "user should not start test enabled as a minter");
 
-            it("emits MinterYeeted properly");
+                await expect(tokenContract.connect(minter)
+                    .addMinter(userAddress)
+                )
+                .to.emit(tokenContract, "MinterAdded")
+                .withArgs(minterAddress, userAddress);
 
-            it("emits Transfer properly on mint");
+                // clean up
+                await expect(tokenContract.connect(minter)
+                    .removeMinter(userAddress)
+                )
+                .to.emit(tokenContract, "MinterYeeted")
+                .withArgs(minterAddress, userAddress);
+            });
 
-            it("emits Transfer properly on burn");
+            it("emits MinterYeeted properly", async () => {
+                assert(await tokenContract.owner() === minterAddress, 
+                    "test should start with minter being owner");
+
+                await expect(tokenContract.connect(minter)
+                    .addMinter(userAddress)
+                )
+                .to.emit(tokenContract, "MinterAdded")
+                .withArgs(minterAddress, userAddress);
+
+                await expect(tokenContract.connect(minter)
+                    .removeMinter(userAddress)
+                )
+                .to.emit(tokenContract, "MinterYeeted")
+                .withArgs(minterAddress, userAddress);
+            });
+
+            it("emits Transfer properly on mint", async () => {
+                assert(await tokenContract.isMinter(minterAddress) === true,
+                    "minter should start test enabled as a minter");
+
+                await expect(tokenContract.connect(minter)
+                    .mint(userAddress, ten)
+                )
+                .to.emit(tokenContract, "Transfer")
+                .withArgs(ethers.constants.AddressZero, userAddress, ten);
+            });
+
+            it("emits Transfer properly on burn", async () => {
+                assert(await tokenContract.isMinter(minterAddress) === true,
+                    "minter should start test enabled as a minter");
+                await mintHundred(tokenContract, minter, minterAddress);
+
+                await expect(tokenContract.connect(minter)
+                    .burn(minterAddress, ten)
+                )
+                .to.emit(tokenContract, "Transfer")
+                .withArgs(minterAddress, ethers.constants.AddressZero, ten);
+            });
         })
     });
 
@@ -292,7 +427,7 @@ describe("CollateralToken", () => {
             it("owner can add minters", async () => {
                 assert(await tokenContract.owner() === minterAddress, 
                     "test should start with minter being owner");
-                assert(await minters[userAddress] === false,
+                assert(await tokenContract.isMinter(userAddress) === false,
                     "test should start with user not enabled as a minter");
 
                 await tokenContract.connect(minter)
@@ -327,7 +462,7 @@ describe("CollateralToken", () => {
             })
 
             it("non-owner cannot add minters", async () => {
-                assert(await minters[userAddress] === false,
+                assert(await tokenContract.isMinter(userAddress) === false,
                     "test should start with user not enabled as a minter");
 
                 await expect(tokenContract.connect(user)
@@ -356,7 +491,13 @@ describe("CollateralToken", () => {
                 .withArgs(userAddress, minterAddress);
             });
             
-            it("emits OwnershipTransferred on renounce");
+            it("emits OwnershipTransferred on renounce", async () => {
+                await expect(tokenContract.connect(minter)
+                    .renounceOwnership()
+                )
+                .to.emit(tokenContract, "OwnershipTransferred")
+                .withArgs(minterAddress, ethers.constants.AddressZero);
+            });
         });
         
         describe("destructive functions", () => {
@@ -377,11 +518,13 @@ describe("CollateralToken", () => {
             }); 
     
             it("owner cannot add or remove minters after renouncing", async () => {
-                assert(await tokenContract.owner() === ethers.constants.AddressZero,
-                    "owner should be zero address at start of test");
+                if(await tokenContract.owner() !== ethers.constants.AddressZero) {
+                    await tokenContract.connect(minter)
+                        .renounceOwnership();
+                };
                 assert(await tokenContract.isMinter(minterAddress) === true,
                     "test should start with minter enabled as a minter");
-                assert(await minters[userAddress] === false,
+                assert(await tokenContract.isMinter(userAddress) === false,
                     "test should start with user not enabled as a minter");
                 
                 await expect(tokenContract.connect(minter)
