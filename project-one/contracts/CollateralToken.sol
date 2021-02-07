@@ -8,6 +8,7 @@ contract CollateralToken is ERC20, Ownable {
     mapping (address => bool) private minters;
 
     event MinterAdded(address addedBy, address newMinter);
+    event MinterYeeted(address yeetedBy, address yeetedMinter);
 
     modifier onlyAuthorized() {
         require(minters[msg.sender], "unauthorized address");
@@ -18,6 +19,10 @@ contract CollateralToken is ERC20, Ownable {
     ERC20("Test Token", "TST")
     Ownable() {
         minters[msg.sender] = true;
+    }
+
+    function isMinter(address toCheck) public view returns(bool) {
+        return minters[toCheck];
     }
 
     function mint(address account, uint256 amount) public onlyAuthorized() {
@@ -31,5 +36,10 @@ contract CollateralToken is ERC20, Ownable {
     function addMinter(address newMinter) public onlyOwner {
         minters[newMinter] = true;
         emit MinterAdded(msg.sender, newMinter);
+    }
+
+    function removeMinter(address yeetedMinter) public onlyOwner {
+        minters[yeetedMinter] = false;
+        emit MinterYeeted(msg.sender, yeetedMinter);
     }
 }

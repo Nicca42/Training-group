@@ -1,5 +1,5 @@
 const { ethers } = require("hardhat");
-const { expect } = require("chai");
+const { expect, assert } = require("chai");
 
 const initToken = async (minter, minterAddress, userAddress) => {
     const TokenContract = await ethers.getContractFactory("CollateralToken");
@@ -246,6 +246,8 @@ describe("CollateralToken", () => {
 
             it("adds minters properly");
 
+            it("removes minters properly");
+
             it("non-minter cannot mint");
 
             it("non-minter cannot burn");
@@ -253,6 +255,8 @@ describe("CollateralToken", () => {
 
         describe("events", async () => {
             it("emits MinterAdded properly");
+
+            it("emits MinterYeeted properly");
 
             it("emits Transfer properly on mint");
 
@@ -262,19 +266,135 @@ describe("CollateralToken", () => {
 
     describe("Ownable tests", async () => {
         describe("functions", async () => {
-            it("returns owner");
+            it("returns owner", async () => {
+                expect(await tokenContract.owner())
+                    .to.equal(minterAddress);
+            });
 
-            it("owner can transfer ownership");
+            it("owner can transfer ownership", async () => {
+                assert(await tokenContract.owner() === minterAddress, 
+                    "test should start with minter being owner");
 
-            it("non-owner cannot add minters");
+                await tokenContract.connect(minter)
+                    .transferOwnership(userAddress);
+
+                expect(await tokenContract.owner())
+                    .to.equal(userAddress);
+
+                // switch back for cleanup
+                await tokenContract.connect(user)
+                    .transferOwnership(minterAddress);
+
+                expect(await tokenContract.owner())
+                    .to.equal(minterAddress);
+            });
+
+            it("owner can add minters", async () => {
+                assert(await tokenContract.owner() === minterAddress, 
+                    "test should start with minter being owner");
+                assert(await minters[userAddress] === false,
+                    "test should start with user not enabled as a minter");
+
+                await tokenContract.connect(minter)
+                    .addMinter(userAddress);
+
+                expect(await tokenContract.isMinter(userAddress))
+                    .to.equal(true);
+
+                // clean up
+                await tokenContract.connect(minter)
+                    .removeMinter(userAddress);
+
+                expect(await tokenContract.isMinter(userAddress))
+                    .to.equal(false);
+            });
+
+            it("owner can remove minters", async () => {
+                assert(await tokenContract.owner() === minterAddress, 
+                    "test should start with minter being owner");
+
+                await tokenContract.connect(minter)
+                    .addMinter(userAddress);
+
+                expect(await tokenContract.isMinter(userAddress))
+                    .to.equal(true);
+
+                await tokenContract.connect(minter)
+                    .removeMinter(userAddress);
+
+                expect(await tokenContract.isMinter(userAddress))
+                    .to.equal(false);
+            })
+
+            it("non-owner cannot add minters", async () => {
+                assert(await minters[userAddress] === false,
+                    "test should start with user not enabled as a minter");
+
+                await expect(tokenContract.connect(user)
+                    .addMinter(ethers.constants.AddressZero)
+                )
+                .to.be.revertedWith("Ownable: caller is not the owner")
+            });
             
-            it("owner can renounce ownership"); // this may bomb future event checks
         });
-
+        
         describe("events", async () => {
-            it("emits OwnershipTransferred on transfer");
+            it("emits OwnershipTransferred on transfer", async () => {
+                assert(await tokenContract.owner() === minterAddress, 
+                    "test should start with minter being owner");
+                
+                await expect(tokenContract.connect(minter)
+                    .transferOwnership(userAddress)
+                )
+                .to.emit(tokenContract, "OwnershipTransferred")
+                .withArgs(minterAddress, userAddress);
 
+                await expect(tokenContract.connect(user)
+                    .transferOwnership(minterAddress)
+                )
+                .to.emit(tokenContract, "OwnershipTransferred")
+                .withArgs(userAddress, minterAddress);
+            });
+            
             it("emits OwnershipTransferred on renounce");
         });
+        
+        describe("destructive functions", () => {
+            // this may bomb future event checks
+            it("owner can renounce ownership", async () => {
+                assert(await tokenContract.owner() === minterAddress, 
+                    "test should start with minter being owner");
+                
+                // including event check in the function check for now
+                await expect(tokenContract.connect(minter)
+                    .renounceOwnership()
+                )
+                .to.emit(tokenContract, "OwnershipTransferred")
+                .withArgs(minterAddress, ethers.constants.AddressZero);
+
+                expect(await tokenContract.owner())
+                    .to.equal(ethers.constants.AddressZero);
+            }); 
+    
+            it("owner cannot add or remove minters after renouncing", async () => {
+                assert(await tokenContract.owner() === ethers.constants.AddressZero,
+                    "owner should be zero address at start of test");
+                assert(await tokenContract.isMinter(minterAddress) === true,
+                    "test should start with minter enabled as a minter");
+                assert(await minters[userAddress] === false,
+                    "test should start with user not enabled as a minter");
+                
+                await expect(tokenContract.connect(minter)
+                    .addMinter(userAddress)
+                )
+                .to.be.revertedWith("Ownable: caller is not the owner");
+
+                await expect(tokenContract.connect(minter)
+                    .removeMinter(minterAddress)
+                )
+                .to.be.revertedWith("Ownable: caller is not the owner");
+            });
+
+        })
     });
 })
