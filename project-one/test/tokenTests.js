@@ -470,7 +470,20 @@ describe("CollateralToken", () => {
                 )
                 .to.be.revertedWith("Ownable: caller is not the owner")
             });
+
             
+            it("non-owner cannot add minters even if they are a minter", async () => {
+                await tokenContract.connect(minter)
+                    .addMinter(userAddress);
+
+                expect(await tokenContract.isMinter(userAddress))
+                    .to.equal(true);
+
+                await expect(tokenContract.connect(user)
+                    .addMinter(ethers.constants.AddressZero)
+                )
+                .to.be.revertedWith("Ownable: caller is not the owner")
+            });
         });
         
         describe("events", async () => {
