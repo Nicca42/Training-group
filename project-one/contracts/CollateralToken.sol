@@ -8,7 +8,7 @@ contract CollateralToken is ERC20 {
         "Collateral Token",
         "CLT"
     ) {
-
+        // FB hardcoded. But besides that nice simple implementation. 
     }
     function mint(address account, uint256 amount) public {
         _mint(account, amount);
