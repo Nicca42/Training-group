@@ -67,7 +67,7 @@ contract Curve {
     function curveIntegral(uint256 a, uint256 b) internal pure returns (uint256) {
         require(b > a, "Math breaks :/");
 
-        uint256 answer = (b**2 - a**2) + 40*(b = a);
+        uint256 answer = (b**2 - a**2) + 40*(b - a);
 
         return answer/200;
     }
