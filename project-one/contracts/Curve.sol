@@ -68,6 +68,8 @@ contract Curve {
         return true;
     }
 
+    // FB internal functions should have an underscore in front of them to 
+    // make it clear within the contract that it is an internal function. 
     function solve(uint256 a, uint256 b) internal pure returns (uint256) {
           require(b > a);
           uint256 temp = ((b**2).sub(a**2)).add((b - a).mul(40));
