@@ -9,7 +9,8 @@ contract CollateralToken is ERC20 {
         "Collateral Token",
         "CLT"
     ) {
-
+        // FB shouldn't hardcode variables in constructor. Other than that nice
+        // simple implementation. 
     }
     function mint(address account, uint256 amount) public {
         _mint(account, amount);
@@ -19,3 +20,13 @@ contract CollateralToken is ERC20 {
         _burn(account, amount);
     }
 }
+
+/**
+FB I also don't know how or why, but I get the following error when trying to 
+compile your contracts:
+
+{ [Error: EISDIR: illegal operation on a directory, read] errno: -21, code: 'EISDIR', syscall: 'read' }
+error Command failed with exit code 1.
+
+I don't even know how that is possible or what is happening. 
+ */

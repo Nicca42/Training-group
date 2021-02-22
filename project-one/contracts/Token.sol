@@ -10,12 +10,17 @@ contract Token is ERC20 {
     mapping(address => uint256) balances;
     mapping (address => bool) _minters;
 
+    // FB shouldn't hardcode input variables. 
     constructor() ERC20(
         "Ninja Token",
         "NTK"
     ) {
         owner = msg.sender;
         _minters[msg.sender] = true;
+        /**
+        FB I like the way you have handled the original owner vs the minting
+        owners. Consistent implementation. 
+         */
     }
 
 
@@ -34,6 +39,21 @@ contract Token is ERC20 {
         _minters[_minter] = true;
 
     }
+
+    /**
+    FB when a function is too long for one line like this (as per the solidity
+    style guide, should only be 80 char a line) its best to break it up 
+    like so:
+
+    function mint(
+        uint256 _amount, 
+        address _to
+    ) 
+        public 
+        onlyMinter 
+        returns(bool)
+    {
+     */
     function mint(uint256 _amount, address _to) public onlyMinter returns(bool){
         _mint(_to, amount);
         return true;
