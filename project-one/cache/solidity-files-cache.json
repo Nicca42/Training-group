@@ -1,9 +1,9 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "/home/x/code/Training-group/project-one/contracts/CollateralToken.sol": {
-      "lastModificationDate": 1612718969159,
-      "contentHash": "ca17389747a19f280c9a0cce502d85db",
+    "/Users/veronicac/Desktop/projects/Training-group/project-one/contracts/CollateralToken.sol": {
+      "lastModificationDate": 1613995016905,
+      "contentHash": "eb91ed3fa78d509277c0e295018b8cfa",
       "sourceName": "contracts/CollateralToken.sol",
       "solcConfig": {
         "version": "0.7.3",
@@ -38,8 +38,8 @@
         "CollateralToken"
       ]
     },
-    "/home/x/code/Training-group/project-one/node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol": {
-      "lastModificationDate": 1611584842899,
+    "/Users/veronicac/Desktop/projects/Training-group/project-one/node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol": {
+      "lastModificationDate": 1611579260384,
       "contentHash": "1d93743f6ca9d2ecf9b3c26718faf610",
       "sourceName": "@openzeppelin/contracts/token/ERC20/ERC20.sol",
       "solcConfig": {
@@ -76,8 +76,8 @@
         "ERC20"
       ]
     },
-    "/home/x/code/Training-group/project-one/node_modules/@openzeppelin/contracts/access/Ownable.sol": {
-      "lastModificationDate": 1611584842271,
+    "/Users/veronicac/Desktop/projects/Training-group/project-one/node_modules/@openzeppelin/contracts/access/Ownable.sol": {
+      "lastModificationDate": 1611579259024,
       "contentHash": "38c56382c57a9e9dab92cee051155870",
       "sourceName": "@openzeppelin/contracts/access/Ownable.sol",
       "solcConfig": {
@@ -112,8 +112,8 @@
         "Ownable"
       ]
     },
-    "/home/x/code/Training-group/project-one/node_modules/@openzeppelin/contracts/GSN/Context.sol": {
-      "lastModificationDate": 1611584842267,
+    "/Users/veronicac/Desktop/projects/Training-group/project-one/node_modules/@openzeppelin/contracts/GSN/Context.sol": {
+      "lastModificationDate": 1611579259023,
       "contentHash": "2adbd82f6d055a4751566d4671512b03",
       "sourceName": "@openzeppelin/contracts/GSN/Context.sol",
       "solcConfig": {
@@ -146,8 +146,8 @@
         "Context"
       ]
     },
-    "/home/x/code/Training-group/project-one/node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol": {
-      "lastModificationDate": 1611584842899,
+    "/Users/veronicac/Desktop/projects/Training-group/project-one/node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+      "lastModificationDate": 1611579260384,
       "contentHash": "e0a41531d159d3a32f84b7a3ecf9fabb",
       "sourceName": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
       "solcConfig": {
@@ -180,8 +180,8 @@
         "IERC20"
       ]
     },
-    "/home/x/code/Training-group/project-one/node_modules/@openzeppelin/contracts/math/SafeMath.sol": {
-      "lastModificationDate": 1611584842271,
+    "/Users/veronicac/Desktop/projects/Training-group/project-one/node_modules/@openzeppelin/contracts/math/SafeMath.sol": {
+      "lastModificationDate": 1611579259025,
       "contentHash": "4d29a22b28b7ec0e89c3cdf1c5e72b83",
       "sourceName": "@openzeppelin/contracts/math/SafeMath.sol",
       "solcConfig": {
@@ -214,9 +214,9 @@
         "SafeMath"
       ]
     },
-    "/home/x/code/Training-group/project-one/contracts/Curve.sol": {
-      "lastModificationDate": 1612365533368,
-      "contentHash": "eaed086f3591a9e9b34a986de9fde12c",
+    "/Users/veronicac/Desktop/projects/Training-group/project-one/contracts/Curve.sol": {
+      "lastModificationDate": 1613994669468,
+      "contentHash": "1d76d81fb45e0f87d958ec8367b724e4",
       "sourceName": "contracts/Curve.sol",
       "solcConfig": {
         "version": "0.7.3",
@@ -250,6 +250,42 @@
       ],
       "artifacts": [
         "Curve"
+      ]
+    },
+    "/Users/veronicac/Desktop/projects/Training-group/project-one/contracts/MockToken.sol": {
+      "lastModificationDate": 1613994711300,
+      "contentHash": "db7c35bc3d2ea42b2728118967e99d6e",
+      "sourceName": "contracts/MockToken.sol",
+      "solcConfig": {
+        "version": "0.7.3",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.7.0"
+      ],
+      "artifacts": [
+        "MockToken"
       ]
     }
   }

@@ -16,6 +16,9 @@ const initToken = async (minter, minterAddress, userAddress) => {
     return tokenContract
 }
 
+// FB if you add custom functions like this you need to add a bit of docs. 
+// Even a two liner just explaining what it does. I like that you have
+// drawn out the common functionality you need. Efficient testing. 
 const mintHundred = async (tokenContract, minter, minterAddress) => {
     const origMinterBalance = await tokenContract.balanceOf(minterAddress);
     const origTotalSupply = await tokenContract.totalSupply();
@@ -75,6 +78,8 @@ describe("CollateralToken", () => {
             it("returns symbol", async () => {
                 expect(await tokenContract.symbol())
                     .to.equal("TST");
+                    // FB this is where hardcoded variables in the constructor
+                    // will nail you. 
             });
 
             it("returns decimals", async () => {
@@ -372,6 +377,7 @@ describe("CollateralToken", () => {
                 )
                 .to.emit(tokenContract, "MinterYeeted")
                 .withArgs(minterAddress, userAddress);
+                // FB lol, I love the yeet. 
             });
 
             it("emits Transfer properly on mint", async () => {
@@ -400,6 +406,7 @@ describe("CollateralToken", () => {
     });
 
     describe("Ownable tests", async () => {
+        // FB This is good, I really like how you have split the tests 
         describe("functions", async () => {
             it("returns owner", async () => {
                 expect(await tokenContract.owner())
@@ -553,4 +560,11 @@ describe("CollateralToken", () => {
 
         })
     });
-})
+});
+
+/**
+ * FB I really like how you have broken the tests up into consistent sub-sections.
+ * These are good tests, you test the important functionality as well as the 
+ * auxiliary functionality (like events, which are still important that they are
+ * correct).
+ */

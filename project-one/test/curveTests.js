@@ -70,6 +70,10 @@ describe("Curve", () => {
 
     describe("Curve tests", () => {
         describe("functions", async () => {
+            /**
+             * FB I know time was tight, but this is actually a great way to 
+             * outline tests before writing them. 
+             */
             it("returns token address for the accepted token");
 
             it("returns token address for the token on the curve");

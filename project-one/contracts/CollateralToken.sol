@@ -19,6 +19,21 @@ contract CollateralToken is ERC20, Ownable {
     ERC20("Test Token", "TST")
     Ownable() {
         minters[msg.sender] = true;
+        /**
+        FB Again, better to pass in the name and symbol than to hardcode. 
+        Also you seem to have two Ownable implementations here, the OZ one,
+        as well as a custom one you have created (onlyAuthorized).
+        This can be dangerous, as they may conflict. 
+        
+        I can see that this is how you did it so that you have the Ownable from
+        OZ being the only one who can add minters and remove them. 
+        I'd recommend looking into the OZ AccessControl contract, as if you 
+        are going to use the OZ infra its better to only use it. 
+        Through the accessControl you could add a new role called super admin
+        that is pretty much the openable contract but with elevated permissions.
+        Don't be afraid to edit their contracts, you will often need more 
+        functionality than they offer. 
+         */
     }
 
     function isMinter(address toCheck) public view returns(bool) {

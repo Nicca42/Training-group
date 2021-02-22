@@ -13,6 +13,14 @@ contract Curve {
 
     constructor(address collateralAddress, address tokenAddress) {
         _collateral = IERC20(collateralAddress);
+        /**
+        FB It makes your contract much bigger to import the entire token contract
+        rather than casting it to an IERC20, or a MintableIERC20.
+        That way you are only importing the interface (not the implementation).
+        Additionally if you ever wanted to update this contract you would not
+        be able to as you have already specified the implementation detail in the
+        import. 
+         */
         _token = CollateralToken(tokenAddress);
     }
 
@@ -25,6 +33,7 @@ contract Curve {
 
     function buyPrice(uint256 _amount) public view returns(uint256) {
         uint256 supply = _token.totalSupply();
+        // FB like the way you have done this.
         return solve(supply.add(_amount), supply);
     }
 
@@ -35,6 +44,14 @@ contract Curve {
 
     function mint(uint256 _amount) public returns (bool) {
         uint256 cost = buyPrice(_amount);
+        /**
+        Solidity style guide puts the max length of a line at 80 char. 
+        It is also much easier to read when formatted correctly (like so:)
+        require(
+            _collateral.allowance(msg.sender, address(this)) >= cost,
+            "mint: unauthorized amount"
+        );
+         */
         require(_collateral.allowance(msg.sender, address(this)) >= cost, "mint: unauthorized amount");
         require(_collateral.transferFrom(msg.sender, address(this), _amount), "mint: transfer failed");
 
