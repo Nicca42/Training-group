@@ -28,6 +28,16 @@ describe("Curve contract", function() {
             const testTokenSupply = await token.totalSupply()
             const supplyAsString = testTokenSupply.toString()
             console.log('supplyAsString:', supplyAsString)
+            /**
+             * FB you were on the right track here, but it is failing because
+             * your buy amount is waaay too small. Remember the token is 
+             * scaled by 18 0's for decimals. 
+             * If you change the buy amount to 
+             * ethers.utils.parseUnits(7, 18)
+             * (ethers will scale the first number, 7 by the specified number
+             * of decimals (18), the second number)
+             * you will get a result. 
+             */
             const buyPriceResult = await exampleToken.buyPrice(7)
             await expect(buyPriceResult).to.eq("1")
         });
@@ -50,4 +60,15 @@ describe("Curve contract", function() {
     describe("burn", async function () {
 
     });
-})
+});
+
+/**
+ * FB to group your tests it is better to have 'describe' for each of the 
+ * major functionality sections, 
+ * i.e describe 'buy Functionality' 
+ * which then has it's of:
+ * expected price correct
+ * reverts on invalid buy 
+ * 
+ * and so on. 
+ */

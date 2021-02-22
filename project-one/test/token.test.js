@@ -16,6 +16,7 @@ describe("Token contract", function() {
   });
 });
 
+// FB, lol the struggle is real. 
 // describe("Token contract", function () {
 //   let deployer;
 //   let user;

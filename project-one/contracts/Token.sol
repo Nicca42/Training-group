@@ -7,11 +7,13 @@ contract Token is ERC20 {
     mapping(address => bool) minters;
     address internal original;
 
+// FB Better not to hardcode input variables like this and rather send them in.
     constructor() ERC20("Token", "TKR") {
         minters[msg.sender] = true;
         original = msg.sender;
     }
 
+// FB nice, like the way you handled the original minter vs new minters. 
     modifier isMinter() {
         require(
             minters[msg.sender],
@@ -28,6 +30,7 @@ contract Token is ERC20 {
         _;
     }
 
+    // FB nice consistency.
     function addMinter(address _newMinter) public isOriginal() {
         minters[_newMinter] = true;
     }

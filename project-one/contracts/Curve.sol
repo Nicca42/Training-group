@@ -29,6 +29,10 @@ contract Curve {
         return address(token);
     }
 
+        /**
+        FB Really like your consistent styling here, glad to see the 80 char
+        line limit respected :) 
+         */
     function mint(uint256 _amount) public returns(bool){
         uint256 cost = buyPrice(_amount);
         
@@ -64,7 +68,21 @@ contract Curve {
         );
     }
 
+/**
+FB When a function runs over (the line limit of 80 char) like this it is better
+to restructure it like so:
+    function curveIntegral(
+        uint256 a, 
+        uint256 b
+    ) 
+        internal 
+        pure 
+        returns (uint256) 
+    {
+ */
     function curveIntegral(uint256 a, uint256 b) internal pure returns (uint256) {
+        // FB Also internal functions are best prefaced with an underscore 
+        // i.e _curveIntegral
         require(b > a, "Math breaks :/");
 
         uint256 answer = (b**2 - a**2) + 40*(b = a);
